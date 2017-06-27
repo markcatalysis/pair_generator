@@ -1,6 +1,6 @@
 import random
 from itertools import izip, combinations
-
+import pdb
 # import os
 # os.getcwd()
 # os.chdir('/home/markcatalysis/Desktop/g45/pair_gen')
@@ -15,7 +15,7 @@ class pair_maker(object):
         self.pairs_history=[]
         self.import_history()
         #sort pairs
-        self.pairs_history=[self.pair_sort(x) for x in self.pairs_history]
+        # self.pairs_history=[self.pair_sort(x) for x in self.pairs_history]
         self.student_list=[]
         self.fill_student_list()
         self.n=len([x for x in self.student_list if x != 'Empty'])
@@ -25,10 +25,8 @@ class pair_maker(object):
         self.missing_students=[]
         self.fill_missing()
         self.output_pair_list=[]
-        self.index_pairs=[]
-        self.triple=[]
+        self.pair_ignore=[]
         self.triple_list=[pair for pair in self.pairs_history if len(pair)==3 and type(pair)==tuple]
-        self.soft_avoid_list=[]
         self.continue_gen=True
 
         # partners_history_includes triples instead of just pairs
@@ -78,19 +76,20 @@ class pair_maker(object):
         #generate indices and remove Empty in pairs
         n_missing=len(self.missing_students)
         base_indices=range(len(self.student_list))
-        if n_missing>=2:
-            for i in xrange((n_missing/2)*2):
-                base_indices.remove(self.missing_students[i])
-                print 'successfully removed empty pairs'
+        # if n_missing>=2:
+        #     for i in xrange((n_missing/2)*2):
+        #         base_indices.remove(self.missing_students[i])
+        #         print 'successfully removed empty pairs'
 
         #shake up indices into randomized trial_list
-        trial_list=random.sample(base_indices, k=self.n)
+        trial_list=random.sample(base_indices, k=len(base_indices))
 
         #turn trial_list into trial_pairs
         trial_pairs=[self.pair_sort(x) for x in self.trial_pairs_gen(trial_list)]
 
         # make list for save and list to attempt multiple iterations of shuffling
-        output_pair_list=[]
+        self.output_pair_list=[]
+        self.pair_ignore=[]
         student_recycle_list=[]
 
         # first iteration started manually
@@ -98,7 +97,7 @@ class pair_maker(object):
             if pair in self.pairs_history:
                  student_recycle_list.extend(list(pair))
             else:
-                 output_pair_list.append(pair)
+                 self.output_pair_list.append(pair)
 
         # more shuffling iterations
         # brute force shuffling of 100 new attempts
@@ -111,33 +110,56 @@ class pair_maker(object):
                 if pair_s in self.pairs_history:
                     student_recycle_list.extend(list(pair_s))
                 else:
-                     output_pair_list.append(pair_s)
+                     self.output_pair_list.append(pair_s)
             counter+=1
+        print('just after first recycling while loop')
+        print(self.output_pair_list)
         # fix empty if odd then ship out pairs
+        # if len(student_recycle_list)==0:
+        #     self.output_pair_list=output_pair_list
+        #     if self.n%2>0:
+        #         unpaired_student=self.odd_solver(output_pair_list)
+        #         self.index_pairs=[]
+        #         triple_output=self.make_a_triple(unpaired_student)
+        #         if triple_output is None:
+        #             self.output_pair_list=False
+        #             return
+        #         else:
+        #             self.index_pairs, self.triple = triple_output
+        #         self.output_pair_list.extend(self.index_pairs)
+        #         self.output_pair_list.append(self.triple)
+        #     self.pairs_history.append('Start Day %s' % self.day_counter)
+        #     self.pairs_history.extend(self.output_pair_list)
+        #     self.pairs_history.append('End Day %s' % self.day_counter)
+        #     self.day_counter +=1
+        #     self.continue_gen=False
+        #     return self.output_pair_list
         if len(student_recycle_list)==0:
-            self.output_pair_list=output_pair_list
+            print('just after empty recycle list')
+            print(self.output_pair_list)
             if self.n%2>0:
-                unpaired_student=self.odd_solver(output_pair_list)
-                self.index_pairs=[]
-                triple_output=self.make_a_triple(unpaired_student)
-                if triple_output is None:
+                unpaired_student=self.odd_solver(self.output_pair_list)
+                print('just found unpaired student')
+                print(self.output_pair_list)
+                self.make_a_triple(unpaired_student)
+                if not self.pair_ignore:
                     self.output_pair_list=False
                     return
-                else:
-                    self.index_pairs, self.triple = triple_output
-                self.output_pair_list.extend(self.index_pairs)
-                self.output_pair_list.append(self.triple)
+            print('just before saving history')
+            print(self.output_pair_list)
             self.pairs_history.append('Start Day %s' % self.day_counter)
             self.pairs_history.extend(self.output_pair_list)
             self.pairs_history.append('End Day %s' % self.day_counter)
             self.day_counter +=1
             self.continue_gen=False
-            return self.output_pair_list
         else:
             # print "failed after 100 tries. that's luck and brute force for ya."
             self._fail_counter +=1
 
     def odd_solver(self, list_of_tuples):
+        '''
+        Remove tuple with missing person but save unpaired student.
+        '''
         missing_index=self.missing_students[-1]
         for tuples in list_of_tuples:
             if missing_index in tuples:
@@ -150,41 +172,59 @@ class pair_maker(object):
         print list_of_tuples
         return
 
-    def make_a_triple(self, unpaired_student):
-        pair1,pair2=(False,False)
-        if unpaired_student == None:
-            return
-        for pair in self.output_pair_list:
-            if unpaired_student!=pair[0]:
-                pair1=self.pair_sort(tuple((unpaired_student,pair[0])))
-            if unpaired_student!=pair[1]:
-                pair2=self.pair_sort(tuple((unpaired_student,pair[1])))
-            if pair1 and pair2:
-                if pair1 not in self.pairs_history and pair2 not in self.pairs_history:
-                    output_triple=self.pair_sort(tuple((pair[0],pair[1],unpaired_student)))
-                    if output_triple not in self.pairs_history:
-                        output=([pair1,pair2],(output_triple))
-                        # self.pairs_history.remove(self.pair_sort(pair))
-                        if output[1] not in self.pairs_history:
-                            self.continue_gen=False
-                            return output
-        # if code reached here, all triples already made before and unique pairs nearly exhausted. that's no good.
-        # softening restrictions on pair formation by releasing pairs that were formed by triples:
-        new_counter=0
-        while new_counter<=30:
-            self.relax_pairs_from_triples()
-            self.index_shuffler()
-            new_counter+=1
-        print 'make_a_triple has failed you'
+    # def make_a_triple(self, unpaired_student):
+    #     pair1,pair2=(False,False)
+    #     if unpaired_student == None:
+    #         return
+    #     for pair in self.output_pair_list:
+    #         if pair !=self.pair_ignore:
+    #             if unpaired_student!=pair[0]:
+    #                 pair1=self.pair_sort(tuple((unpaired_student,pair[0])))
+    #             if unpaired_student!=pair[1]:
+    #                 pair2=self.pair_sort(tuple((unpaired_student,pair[1])))
+    #             if pair1 and pair2:
+    #                 if pair1 not in self.pairs_history and pair2 not in self.pairs_history:
+    #                     output_triple=self.pair_sort(tuple((pair[0],pair[1],unpaired_student)))
+    #                     if output_triple not in self.pairs_history:
+    #                         output=([pair,pair1,pair2],(output_triple))
+    #                         if output[1] not in self.pairs_history:
+    #                             self.continue_gen=False
+    #                             return output
+    #     # if code reached here, all triples already made before and unique pairs nearly exhausted. that's no good.
+    #     # softening restrictions on pair formation by releasing pairs that were formed by triples:
+    #     new_counter=0
+    #     while new_counter<=30:
+    #         self.relax_pairs_from_triples()
+    #         self.index_shuffler()
+    #         new_counter+=1
+    #     print 'make_a_triple has failed you'
 
-    def relax_pairs_from_triples(self):
-        pairs_from_triples=[]
-        for triple in self.triple_list:
-            for subset in (combinations(triple, 2)):
-                pairs_from_triples.append(subset)
-        for pair in pairs_from_triples:
-            if pair in self.pairs_history:
-                self.pairs_history.remove(pair)
+    def make_a_triple(self, unpaired_student):
+        pairs=self.output_pair_list
+        for pair in pairs:
+            pair1=self.pair_sort((pair[0],unpaired_student))
+            pair2=self.pair_sort((pair[1],unpaired_student))
+            triple=self.pair_sort((pair[0],pair[1],unpaired_student))
+            new_output=[pair1, pair2, triple]
+            if all([x not in self.pairs_history for x in new_output]):
+                self.output_pair_list.extend(new_output)
+                self.pair_ignore=[pair, pair1, pair2]
+                return
+        # while new_counter<=30:
+        #     self.relax_pairs_from_triples()
+        #     self.index_shuffler()
+        #     new_counter+=1
+        # print 'make_a_triple has failed you'
+
+    # def relax_pairs_from_triples(self):
+    #     print('relaxing pairs')
+    #     pairs_from_triples=[]
+    #     for triple in self.triple_list:
+    #         for subset in (combinations(triple, 2)):
+    #             pairs_from_triples.append(subset)
+    #     for pair in pairs_from_triples:
+    #         if pair in self.pairs_history:
+    #             self.pairs_history.remove(pair)
 
     def pair_sort(self, a_tuple):
         return tuple(sorted(a_tuple))
@@ -196,7 +236,7 @@ class pair_maker(object):
         return self.student_list[index]
 
     def name_history(self):
-        pairs_sans_triple_pairs=[x for x in self.pairs_history if x not in self.index_pairs]
+        pairs_sans_triple_pairs=[x for x in self.pairs_history if x not in self.pair_ignore]
         return [tuple([self.index_to_user(i) for i in x]) if type(x)==tuple else x for x in pairs_sans_triple_pairs]
 
     def save_history(self):
@@ -204,8 +244,7 @@ class pair_maker(object):
         with open('name_history.txt', 'wb') as f:
             for name in names:
                 #this is where we write appropriate day-starting script. can't use day counter method here.
-                if 'Empty' not in name:
-                    f.write(str(name)+'\n')
+                f.write(str(name)+'\n')
                 #this is where we write appopriate day-ending text. can't use day counter method here.
         indices = self.pairs_history
         with open('index_history.txt', 'wb') as g:
@@ -263,18 +302,18 @@ class pair_maker(object):
         self._fail_counter=0
 
 
-# if __name__ == '__main__':
-pm=pair_maker()
-pm.reset_counters()
-pm.generate_one()
-pm.generate(2000)
-pm.save_history()
-pm.output_pair_list
-pm.index_pairs
-pm.pairs_history
-pm.reset_counters()
-pm.odd_solver(pm.output_pair_list)
-pm.output_pair_list
+if __name__ == '__main__':
+    pm=pair_maker()
+    pm.reset_counters()
+    pm.generate_one()
+# pm.output_pair_list
+# pm.generate(2000)
+# pm.save_history()
+# pm.output_pair_list
+# pm.pairs_history
+# pm.reset_counters()
+# pm.odd_solver(pm.output_pair_list)
+# pm.output_pair_list
 # pm.generate(500)
 # pairs_sans_triple_pairs=[x for x in pm.pairs_history if x not in pm.index_pairs]
 # pairs_sans_triple_pairs
