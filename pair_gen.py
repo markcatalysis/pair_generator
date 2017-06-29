@@ -33,7 +33,7 @@ class pair_maker(object):
         # starting at 4 due to previous day pairs. 4 means 5th day. 0 is first.
 
     def fill_student_list(self):
-        self.student_list= ['Anh Nguyen',
+        self.student_list= ['Anh (DA) Nguyen',
         'Anushadevi Mohan',
         'Camilla Nawaz',
         'Elham Keshavarzian',
@@ -147,11 +147,14 @@ class pair_maker(object):
                     return
             print('just before saving history')
             print(self.output_pair_list)
-            self.pairs_history.append('Start Day %s' % self.day_counter)
-            self.pairs_history.extend(self.output_pair_list)
-            self.pairs_history.append('End Day %s' % self.day_counter)
-            self.day_counter +=1
-            self.continue_gen=False
+            if self.quality_assurance():
+                self.pairs_history.append('Start Day %s' % self.day_counter)
+                self.pairs_history.extend(self.output_pair_list)
+                self.pairs_history.append('End Day %s' % self.day_counter)
+                self.day_counter +=1
+                self.continue_gen=False
+            else:
+                print 'Quality Assurance Failure. Output list did not meet current requirements.'
         else:
             # print "failed after 100 tries. that's luck and brute force for ya."
             self._fail_counter +=1
@@ -298,9 +301,22 @@ class pair_maker(object):
 
     def reset_counters(self):
         # hard reset
-        self.day_counter=6
+        self.day_counter=7
         self._fail_counter=0
 
+    def quality_assurance(self):
+        all_students_from_output=[]
+        # no copy pairs
+        if any(x in self.pairs_history for x in self.output_pair_list):
+            print('old pairs detected in output')
+            return False
+        else:
+            return True
+        # # no student repeats
+        # for pair in self.output_pair_list:
+        #     all_students_from_output.extend(list(pair))
+        # if len(set(all_students_from_output)) != len(all_students_from_output):
+        #     return False
 
 if __name__ == '__main__':
     pm=pair_maker()
@@ -325,7 +341,7 @@ if __name__ == '__main__':
 #             print(pm.index_to_user(i))
 # pm.index_shuffler()
 # [tuple([pm.index_to_user(i) for i in x]) if type(x)==tuple else x for x in pairs_sans_triple_pairs]
-pm.odd_solver(pm.output_pair_list)
+# pm.odd_solver(pm.output_pair_list)
 
 
 '''
