@@ -57,13 +57,16 @@ class pair_maker(object):
     def absent_students(self):
         students_absent=raw_input('Are there students absent?')
         if students_absent in [True, 'yes', 'y']:
-            current_student_roster=zip([x for x in self.student_list if x!='Empty'], [self.student_list.index(x) for x in self.student_list if x!='Empty'])
-            for i in current_student_roster:
-                print i
+            # current_student_roster=[(x, self.student_list.index(x)) for x in self.student_list if x!='Empty']
+            # self.fill_missing()
+            # for i in current_student_roster:
+            #     print i
             today_removal_list=input('Input as a list the indices of students who are not available')
             if type(today_removal_list)==list:
                 for j in today_removal_list:
                     self.student_list[j]='Empty'
+                self.fill_missing()
+
 
     def fill_missing(self):
         self.missing_students=[i for i,x in enumerate(self.student_list) if x=='Empty']
@@ -74,12 +77,12 @@ class pair_maker(object):
         Uses random sampling to generate unique pairs. If could not create list in sufficient attempts, begins to return list to minimize repeat pair beyond 2 times.
         """
         #generate indices and remove Empty in pairs
-        n_missing=len(self.missing_students)
         base_indices=range(len(self.student_list))
-        # if n_missing>=2:
-        #     for i in xrange((n_missing/2)*2):
-        #         base_indices.remove(self.missing_students[i])
-        #         print 'successfully removed empty pairs'
+        n_missing=len(self.missing_students)
+        if n_missing>=2:
+            for i in xrange((n_missing/2)*2):
+                base_indices.remove(self.missing_students[i])
+                print 'successfully removed absent student from pairs'
 
         #shake up indices into randomized trial_list
         trial_list=random.sample(base_indices, k=len(base_indices))
@@ -112,31 +115,13 @@ class pair_maker(object):
                 else:
                      self.output_pair_list.append(pair_s)
             counter+=1
-        print('just after first recycling while loop')
+        print('just after recycling while loop')
         print(self.output_pair_list)
         # fix empty if odd then ship out pairs
-        # if len(student_recycle_list)==0:
-        #     self.output_pair_list=output_pair_list
-        #     if self.n%2>0:
-        #         unpaired_student=self.odd_solver(output_pair_list)
-        #         self.index_pairs=[]
-        #         triple_output=self.make_a_triple(unpaired_student)
-        #         if triple_output is None:
-        #             self.output_pair_list=False
-        #             return
-        #         else:
-        #             self.index_pairs, self.triple = triple_output
-        #         self.output_pair_list.extend(self.index_pairs)
-        #         self.output_pair_list.append(self.triple)
-        #     self.pairs_history.append('Start Day %s' % self.day_counter)
-        #     self.pairs_history.extend(self.output_pair_list)
-        #     self.pairs_history.append('End Day %s' % self.day_counter)
-        #     self.day_counter +=1
-        #     self.continue_gen=False
-        #     return self.output_pair_list
         if len(student_recycle_list)==0:
             print('just after empty recycle list')
             print(self.output_pair_list)
+            self.n=len([x for x in self.student_list if x != 'Empty'])
             if self.n%2>0:
                 unpaired_student=self.odd_solver(self.output_pair_list)
                 print('just found unpaired student')
@@ -409,4 +394,39 @@ old pairs for first three days if needed/overwritten:
 (10, 16)
 (15, 16)
 (10, 15, 16)
+(2, 8)
+(6, 19)
+(7, 16)
+(0, 10)
+(9, 17)
+(3, 14)
+(4, 15)
+(1, 5)
+(13, 18)
+(2, 11)
+(8, 11)
+(2, 8, 11)
+(11, 13)
+(2, 4)
+(1, 3)
+(17, 19)
+(8, 9)
+(5, 14)
+(6, 7)
+(10, 18)
+(0, 15)
+(2, 16)
+(4, 16)
+(2, 4, 16)
+(13, 14)
+(1, 9)
+(2, 7)
+(3, 5)
+(0, 11)
+(4, 19)
+(8, 10)
+(15, 17)
+(1, 6)
+(6, 9)
+(1, 6, 9)
 '''
