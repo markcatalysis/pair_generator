@@ -286,7 +286,7 @@ class pair_maker(object):
 
     def reset_counters(self):
         # hard reset
-        self.day_counter=7
+        self.day_counter=9
         self._fail_counter=0
 
     def quality_assurance(self):
@@ -305,7 +305,7 @@ class pair_maker(object):
 
 if __name__ == '__main__':
     pm=pair_maker()
-    pm.reset_counters()
+    # pm.reset_counters()
     pm.generate_one()
 # pm.output_pair_list
 # pm.generate(2000)
@@ -429,4 +429,28 @@ old pairs for first three days if needed/overwritten:
 (1, 6)
 (6, 9)
 (1, 6, 9)
+(6, 13)
+(5, 18)
+(4, 10)
+(0, 1)
+(11, 19)
+(14, 17)
+(2, 3)
+(7, 8)
+(9, 15)
+(0, 16)
+(1, 16)
+(0, 1, 16)
+(0, 18)
+(4, 9)
+(5, 11)
+(7, 14)
+(1, 10)
+(13, 17)
+(3, 8)
+(2, 6)
+(16, 19)
+(3, 15)
+(8, 15)
+(3, 8, 15)
 '''
