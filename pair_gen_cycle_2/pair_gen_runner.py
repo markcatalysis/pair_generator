@@ -47,6 +47,47 @@ pm.generate_one()
 # num_name=zip(xrange(len(names)), names)
 # pprint (num_name)
 
+# Start Day 23
+# ('Anushadevi Mohan', 'Joseph Wiley')
+# ('Joseph Fang', 'Shige Tajima')
+# ('Jacob Hawkesworth', 'Yuwei (Kelly) Peng')
+# ('Elham Keshavarzian', 'Himani Agrawal')
+# ('Anh (DA) Nguyen', 'Kenneth Durell')
+# ('Jeremy Gozlan', 'Jianda (Jay) Zhou')
+# ('Praveen Vaikunta Raman', 'Urmi Mukherjee')
+# ('Camilla Nawaz', 'InHo (Edward) Rha')
+# ('Matthew Wong', 'Nikhil Makaram', 'Rosina Norton')
+# End Day 23
+# Date & Time of Creation: Tue Jul 18 09:53:36 2017
+#
+# Start Day 24
+# ('Anushadevi Mohan', 'InHo (Edward) Rha')
+# ('Jianda (Jay) Zhou', 'Praveen Vaikunta Raman')
+# ('Jeremy Gozlan', 'Yuwei (Kelly) Peng')
+# ('Camilla Nawaz', 'Nikhil Makaram')
+# ('Kenneth Durell', 'Shige Tajima')
+# ('Jacob Hawkesworth', 'Matthew Wong')
+# ('Anh (DA) Nguyen', 'Joseph Wiley')
+# ('Elham Keshavarzian', 'Joseph Fang')
+# ('Himani Agrawal', 'Rosina Norton', 'Urmi Mukherjee')
+# End Day 24
+# Date & Time of Creation: Tue Jul 18 09:58:21 2017
+#
+# Start Day 25
+# ('Praveen Vaikunta Raman', 'Shige Tajima')
+# ('Anushadevi Mohan', 'Himani Agrawal')
+# ('Joseph Wiley', 'Rosina Norton')
+# ('InHo (Edward) Rha', 'Yuwei (Kelly) Peng')
+# ('Camilla Nawaz', 'Jacob Hawkesworth')
+# ('Nikhil Makaram', 'Urmi Mukherjee')
+# ('Anh (DA) Nguyen', 'Matthew Wong')
+# ('Jianda (Jay) Zhou', 'Joseph Fang')
+# ('Elham Keshavarzian', 'Jeremy Gozlan', 'Kenneth Durell')
+# End Day 25
+# Date & Time of Creation: Tue Jul 18 09:58:55 2017
+
+
+
 #deleted first 110 points from history to generate new pairs. that's ~9 days worth of student pairs.
 #keeping triples in list? will do in a bit. need to generate custom pairs for today.
 #specifically was asked to make a triplet with Ahn/DA in it.
@@ -176,6 +217,18 @@ deleted points
 (3, 15)
 (8, 15)
 (3, 8, 15)
+(0, 14)
+(18, 19)
+(6, 10)
+(8, 13)
+(4, 7)
+(5, 17)
+(2, 9)
+(3, 16)
+(1, 15)
+(6, 11)
+(10, 11)
+(6, 10, 11)
 '''
 
 '''
@@ -271,4 +324,35 @@ saved history
 (0, 16)
 (9, 16)
 (0, 9, 16)
+'''
+
+
+'''
+Generated but unused pairs...
+
+(3, 11)
+(15, 17)
+(1, 4)
+(10, 16)
+(5, 19)
+(2, 6)
+(14, 18)
+(0, 13)
+(8, 9)
+(3, 7)
+(7, 11)
+(3, 7, 11)
+(5, 14)
+(17, 18)
+(2, 4)
+(10, 13)
+(15, 16)
+(1, 3)
+(6, 8)
+(7, 9)
+(0, 19)
+(5, 11)
+(11, 14)
+(5, 11, 14)
+
 '''

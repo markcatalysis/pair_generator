@@ -58,10 +58,10 @@ class pair_maker(object):
     def absent_students(self):
         students_absent=raw_input('Are there students absent?')
         if students_absent in [True, 'yes', 'y']:
-            # current_student_roster=[(x, self.student_list.index(x)) for x in self.student_list if x!='Empty']
-            # self.fill_missing()
-            # for i in current_student_roster:
-            #     print i
+            current_student_roster=[(x, self.student_list.index(x)) for x in self.student_list if x!='Empty']
+            self.fill_missing()
+            for i in current_student_roster:
+                print i
             today_removal_list=input('Input as a list the indices of students who are not available')
             if type(today_removal_list)==list:
                 for j in today_removal_list:
